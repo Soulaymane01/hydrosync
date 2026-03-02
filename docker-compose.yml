@@ -1,0 +1,73 @@
+
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: hydrosync_postgres
+    restart: always
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-hydrosync_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hydrosync_network
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: hydrosync_backend
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=${POSTGRES_DB:-hydrosync_db}
+      - DB_USER=${POSTGRES_USER:-postgres}
+      - DB_PASSWORD=${POSTGRES_PASSWORD:-postgres}
+      - DB_HOST=db
+      - DB_PORT=5432
+    volumes:
+      - ./Backend:/app
+    networks:
+      - hydrosync_network
+
+  client:
+    build:
+      context: ./Client
+      dockerfile: Dockerfile
+    container_name: hydrosync_client
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./Client:/app
+      - /app/node_modules
+    networks:
+      - hydrosync_network
+
+  partner:
+    build:
+      context: ./Partner
+      dockerfile: Dockerfile
+    container_name: hydrosync_partner
+    restart: always
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./Partner:/app
+      - /app/node_modules
+    networks:
+      - hydrosync_network
+
+volumes:
+  postgres_data:
+
+
+networks:
+  hydrosync_network:
+    driver: bridge

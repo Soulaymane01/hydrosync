@@ -26,6 +26,8 @@ import {
 } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts"
 
+import { DateRange } from "react-day-picker"
+
 const maintenanceData = [
   { month: "Jan", scheduled: 45, completed: 42, emergency: 8 },
   { month: "Feb", scheduled: 38, completed: 35, emergency: 12 },
@@ -142,6 +144,7 @@ const assetDetails = [
 
 export default function AssetsPage() {
   const [selectedAsset, setSelectedAsset] = useState(assetDetails[0])
+  const [date, setDate] = useState<DateRange | undefined>()
 
   return (
     <div className="flex-1 space-y-4 p-4 md:p-8 pt-6">
@@ -436,7 +439,10 @@ export default function AssetsPage() {
                       <SelectItem value="inspection">Inspection</SelectItem>
                     </SelectContent>
                   </Select>
-                  <DatePickerWithRange />
+                  <DatePickerWithRange
+                    date={date}
+                    onDateChange={setDate}
+                  />
                 </div>
                 <Button>
                   <Calendar className="mr-2 h-4 w-4" />

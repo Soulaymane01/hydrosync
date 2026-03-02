@@ -165,16 +165,7 @@ export async function fetchReadingStats(hours: number = 24): Promise<{
     return apiFetch(`/readings/stats/?hours=${hours}`);
 }
 
-export default {
-    fetchLatestReadings,
-    fetchRealtimeData,
-    fetchDashboardStats,
-    fetchMeters,
-    fetchMeter,
-    fetchMeterConsumption,
-    fetchMeterReadings,
-    fetchReadingStats,
-};
+
 
 // Add a valid token to requests if it exists
 api.interceptors.request.use(
@@ -203,4 +194,16 @@ api.interceptors.request.use(
     },
 )
 
-export default api
+
+
+export default {
+    fetchLatestReadings,
+    fetchRealtimeData,
+    fetchDashboardStats,
+    fetchMeters,
+    fetchMeter,
+    fetchMeterConsumption,
+    fetchMeterReadings,
+    fetchReadingStats,
+    api,
+};
